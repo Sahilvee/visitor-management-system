@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Acknowledgement of AI Assistance
 
 I would like to acknowledge the use of Artificial Intelligence (AI) tools, specifically ChatGPT, as a guidance and learning resource during the development of this project.
@@ -45,6 +46,8 @@ Additionally, I explored the use of AI tools as a learning and guidance resource
 
 ## Front desk dashboard
 ![alt text](image-5.png)
+=======
+
 
 # Frontend Overview
 
