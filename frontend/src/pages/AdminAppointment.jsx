@@ -116,30 +116,75 @@ const showToast  = (message, type = "success")  => {
   }, []);
 
   //  FILTERED DATA
-  const filteredAppointments = useMemo(() => {
-      let data =  [...appointments];
+   //         *  logic 
+//--- useMemo prevents unnecessary recalculation. Runs only when appointments, search, or statusFilter changes.
+// 1. we have stored all appointment, get it
+// 2. perform iteration on each 
+// 3. check there status and seach match 
+// 4. if both true only then to add 
+ const filteredAppointments = useMemo(() => {
 
-    if  (statusFilter  !==  "ALL") {
-      data = data.filter((a) => a.status === statusFilter);
+  let data = [];
+
+  for (let i = 0; i < appointments.length; i++) {
+
+    const appointment = appointments[i];
+
+    // status check
+    let statusMatch = false;
+
+    if (statusFilter === "ALL") {
+      statusMatch = true;
+    }
+    else if (appointment.status === statusFilter) {
+      statusMatch = true;
     }
 
-    if (search.trim()) {
-      data = data.filter(
-        (a) =>
-           a.trackingId
-            ?.toLowerCase()
-            .includes(search.toLowerCase()) ||
-           a.visitorId?.name
-            ?.toLowerCase()
-            .includes(search.toLowerCase()) ||
-           a.hostId?.name
-            ?.toLowerCase()
-            .includes(search.toLowerCase())
-      );
+    // search check
+    let searchMatch = false;
+
+    if (search.trim() === "") {
+      searchMatch = true;
+    }
+    else {
+
+      const text = search.toLowerCase();
+
+      if (
+        appointment.trackingId
+          ?.toLowerCase()
+          .includes(text)
+      ) {
+        searchMatch = true;
+      }
+
+      else if (
+        appointment.visitorId?.name
+          ?.toLowerCase()
+          .includes(text)
+      ) {
+        searchMatch = true;
+      }
+
+      else if (
+        appointment.hostId?.name
+          ?.toLowerCase()
+          .includes(text)
+      ) {
+        searchMatch = true;
+      }
     }
 
-    return data;
-  }, [appointments, search, statusFilter]);
+    // final condition
+    if (statusMatch && searchMatch) {
+      data.push(appointment);
+    }
+  }
+
+  return data;
+
+}, [appointments, search, statusFilter]);
+
 
   // STATS
   const stats = useMemo(() => {
@@ -212,6 +257,52 @@ const showToast  = (message, type = "success")  => {
     }
   };
 
+  // Handle export 
+  const downloadPDF = async () => {
+
+  try {
+
+    const response = await api.get(
+      "/export/appointments",
+      {
+        responseType: "blob",
+      }
+    );
+
+    // create file url
+    const url =
+      window.URL.createObjectURL(
+        new Blob([response.data])
+      );
+
+    // create hidden anchor
+    const link =
+      document.createElement("a");
+
+    link.href = url;
+
+    link.setAttribute(
+      "download",
+      "appointments-report.pdf"
+    );
+
+    document.body.appendChild(link);
+
+    // auto click
+    link.click();
+
+    // cleanup
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+};
+
   return (
      <div className="min-h-screen bg-gray-50 p-6 space-y-6">
 
@@ -259,6 +350,9 @@ const showToast  = (message, type = "success")  => {
             className="w-full bg-white border border-gray-100 rounded-xl pl-10 pr-4 py-3 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-300"
           />
         </div>
+        <button onClick={downloadPDF}>
+  Export PDF
+</button>
       </div>
 
       { /* STATS   */}
@@ -566,67 +660,71 @@ const showToast  = (message, type = "success")  => {
       </div>
 
       {     /* DETAILS MODAL  */     }
-      { selectedAppointment && (
-               <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex justify-center items-center p-4">
 
-          <div className="bg-white w-full max-w-lg rounded-3xl shadow-xl p-6 relative border border-gray-100">
+      { selectedAppointment   && (
+               <div className="fixed  inset-0  bg-black/30  backdrop-blur-sm z-50 flex justify-center items-center p-4">
+
+          <div className = "bg-white w-full max-w-lg   rounded-3xl shadow-xl  p-6 relative border   border-gray-100">
 
             <button
                onClick={() => setSelectedAppointment(null)}
+
                className="absolute top-4 right-5 text-gray-400 hover:text-black text-xl"
             >
-              ✕ 
+                ✕ 
 
             </button>
 
-            <h2 className =" text-2xl font-bold  text-gray-800 mb-6">
-                Appointment Details
-            </h2 >
+             <h2 className =" text-2xl font-bold  text-gray-800 mb-6">
+                 Appointment Details
+               </h2 >
 
-            <div  className="space-y-4 text-sm" 
+            <div   className="space-y-4 text-sm" 
             >
 
-              <div  className=" grid grid-cols-2  gap-4">
+              <div  className="  grid grid-cols-2  gap-4">
 
                 <div className="bg-gray-50/70  p-4 rounded-xl" >
                  
                  
-                  <p  className="text-gray-500 text-xs ">
-                     Tracking ID
-                  </p>
+                  <p  className="text-gray-500  text-xs ">
+                       Tracking ID
+                   </p>
 
-                  <p className="font-semibold mt-1" >
-                     {selectedAppointment.trackingId }
+                   <p  className="font-semibold mt-1" >
+                     { selectedAppointment.trackingId }
                   </p>
 
 
                 </div>
 
-                <div className="bg-gray-50/70 p-4 rounded-xl">
-                   <p className="text-gray-500 text-xs">
-                               Status
+                <div  className="bg-gray-50/70 p-4 rounded-xl">
+                   <p  className="text-gray-500 text-xs">
+                                  Status
                   </p>
 
                   <div  className="mt-2">
+
+
                      <span
                       className={ `px-3  py-1 rounded-full text-xs font-semibold  ${getStatusStyle(
                         selectedAppointment.status
-                      )}`}
+                        )}`}
                     >
-                       {selectedAppointment.status}
-                    </span>
+                         {selectedAppointment.status}
+                     </span>
                   </div>
 
                 </div>
               </div>
 
-                       <div className="bg-gray-50/70 p-4 rounded-xl">
-                <p className= "text-gray-500 text-xs ">
+                        <div className="bg-gray-50/70 p-4 rounded-xl">
+                <p  className= "text-gray-500 text-xs ">
                    Visitor
                     </p>
 
-                <p  className="font-semibold mt-1">
-                   { selectedAppointment.visitorId?.name }
+                <p   className="font-semibold mt-1">
+                   {  selectedAppointment.visitorId?.name }
                 </p>
 
                     <p className="text-gray-500 text-sm ">
@@ -634,31 +732,33 @@ const showToast  = (message, type = "success")  => {
                 </p>
               </div>
 
-              <div className="bg-gray-50/70 p-4 rounded-xl">
+              <div  className="bg-gray-50/70 p-4 rounded-xl">
                  <p  className="text-gray-500 text-xs">
                    Host 
-                </p>
+                  </p>
 
                  <p className="font-semibold mt-1">
                   {selectedAppointment.hostId?.name}
                 </p>
        </div> 
 
-                   <div className="bg-gray-50/70 p-4 rounded-xl">
+                     <div className="bg-gray-50/70 p-4 rounded-xl">
                 <p  className=" text-gray-500  text-xs">
                   Purpose
 
                 </p>
 
+                
                 <p className="font-semibold mt-1">
                  
-                   {selectedAppointment.visitPurpose}
+                    {selectedAppointment.visitPurpose}
                 </p>
               </div>
 
               <div className="bg-gray-50/70 p-4 rounded-xl">
                 
-                <p className="text-gray-500 text-xs">
+               
+                   <p className="text-gray-500 text-xs">
                  
                    Date & Time
                 </p>
@@ -666,31 +766,31 @@ const showToast  = (message, type = "success")  => {
                 <p className="font-semibold mt-1">
                  
                  
-                  {formatDateTime(
+                     {formatDateTime(
                     selectedAppointment.visitDate,
                     selectedAppointment.endTime
                   )}
                 </p>
-              </div>
+                 </div>
 
-              {selectedAppointment.rejectionReason && (
+                 {selectedAppointment.rejectionReason  && (
                 <div className="bg-red-50/70 p-4 rounded-xl">
-                  <p className="text-red-500 text-xs">
+                  <p  className="text-red-500 text-xs " >
                     Rejection Reason
                   </p>
-
+ 
                    <p className="text-red-700 font-medium mt-1">
                     {selectedAppointment.rejectionReason}
-                  </p>
+                    </p>
 
                 </div>
             )}
             </div>
-          </div>
+               </div>
 
 
         </div>
-      )}
+         )}
 
                    { /* REJECT MODAL */ }
       { rejectModal.open  &&  (

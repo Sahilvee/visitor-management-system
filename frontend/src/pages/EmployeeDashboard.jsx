@@ -123,53 +123,82 @@ export default function EmployeeDashboard() {
   };
 
              // FILTERED DATA
-  const filteredAppointments =
-     useMemo(() => {
-      return appointments.filter(
-        (a) => {
-          const visitorName =
-            a.visitorId?.name?.toLowerCase() ||
-            "";
+const  filteredAppointments = useMemo(() => {
 
-            const visitorEmail =
-             a.visitorId?.email?.toLowerCase() ||
-            "";
+    return appointments.filter((a) => {
 
-            const matchesSearch =
-            visitorName.includes(
-              search.toLowerCase()
-            ) ||
-            visitorEmail.includes(
-              search.toLowerCase()
-            );
+    let visitorName = "";
+     let visitorEmail = "";
 
-           const matchesStatus =
-            statusFilter === "ALL"
-              ? true
-              : a.status ===
-                statusFilter;
+    //  check if  visitor exists 
+    if  (a.visitorId) {
 
-           const matchesDate =
-            dateFilter
-              ? new Date(a.visitDate)
-                  .toISOString()
-                  .split("T")[0] ===
-                dateFilter
-              : true;
+      // get name
+      if  (a.visitorId.name) {
+          visitorName =a.visitorId.name.toLowerCase();
+      }
 
-          return (
-             matchesSearch &&
-            matchesStatus &&
-             matchesDate
-          );
-        }
-      );
-    }, [
-       appointments,
-       search,
-      statusFilter,
-      dateFilter,
-    ]);
+      // get email
+      if (a.visitorId.email ) {
+        visitorEmail =a.visitorId.email.toLowerCase();
+      }
+    }
+
+    // search checking
+    const  searchText =
+       search.toLowerCase();
+
+     const nameMatch = visitorName.includes(searchText);
+
+    const emailMatch =  visitorEmail.includes(searchText);
+
+    const matchesSearch = nameMatch || emailMatch;
+
+    // status filter
+    let  matchesStatus = true;
+
+    if (statusFilter !== "ALL") {
+
+        if (  a.status !== statusFilter) {
+        matchesStatus = false;
+      }
+    }
+
+    // date filter
+    let matchesDate = true;
+
+    if  (dateFilter ) {
+
+      const  appointmentDate = new Date(a.visitDate).toISOString().split("T")[0];
+
+      if (appointmentDate !== dateFilter) {
+        matchesDate = false;
+      }
+    }
+
+    // final return
+    if (
+      matchesSearch &&
+      matchesStatus &&
+      matchesDate
+    ) 
+    {
+
+
+      return true;
+    }
+
+    return false;
+
+  }
+);
+
+}, [
+  appointments,
+  search,
+  statusFilter,
+  dateFilter
+]);
 
   return (
     <div className=" min-h-screen bg-gray-100 flex">

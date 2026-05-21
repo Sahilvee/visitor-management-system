@@ -92,6 +92,51 @@ function AdminVisitor() {
     v.email?.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Handle export 
+  const downloadPDF = async () => {
+
+  try {
+
+    const response = await api.get(
+      "/export/users",
+      {
+        responseType: "blob",
+      }
+    );
+
+    // create file url
+    const url =
+      window.URL.createObjectURL(
+        new Blob([response.data])
+      );
+
+    // create hidden anchor
+    const link =
+      document.createElement("a");
+
+    link.href = url;
+
+    link.setAttribute(
+      "download",
+      "appointments-report.pdf"
+    );
+
+    document.body.appendChild(link);
+
+    // auto click
+    link.click();
+
+    // cleanup
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+};
   return (
     <div className="space-y-6">
 
@@ -136,6 +181,10 @@ function AdminVisitor() {
            />
           
           </div>
+
+                <button onClick={downloadPDF}>
+  Export PDF
+</button>
       </div>
 
 

@@ -5,26 +5,34 @@ import {asyncHandler} from "../utils/asyncHandler.js";
        //-------------------------- Admin creates Employee / Frontdesk
 export const adminregister = asyncHandler(async (req, res) => {
   const { name, email, phone, password, role } = req.body;
+           //   *Things to keep in mind in this call*
+     //1.  check every required field is there
+     //2. cross check the role (because front end can be tempered)
+     //3. check is there existing user with the same email 
+     //4. create user and return 
 
-    // validation
-  if  (!name || !email || !phone || !password || !role) {
+    //  1. validation
+  if  (!name || !email || !phone || !password || !role) 
+    {
+    console.log("Not all required field is there in the api call by admin ....")
     return res.status(400).json({
        message: "All credentials are required",
      });
   }
 
-  // allowed roles (important!)
-  const allowedRoles =  ["EMPLOYEE", "FRONTDESK"];
-   
-  if (!allowedRoles.includes(role)) {
+  //2. allowed roles (roles admin can choose)
+
+    if (role!=="FRONTDESK"&& role!=="EMPLOYEE") 
+      {
+    // unknown role 
     return res.status(400).json({
-      message: "Invalid role assignment",
+      message: "Invalid role ",
 
     });
   }
 
-  //  check existing user
-  const userExist = await User.findOne({ email });
+  //3.  check existing user
+  const userExist = await User.findOne({ email:email });
     if (userExist) {
            return res.status(409).json({
         message: "User already exists",
@@ -38,38 +46,50 @@ export const adminregister = asyncHandler(async (req, res) => {
    // create user
 
       const user = await User.create({
-    name,
-     email,
-     phone,
+    name:name,
+     email:email,
+     phone:phone,
      password: hashedPassword,
-    role,
-     createdBy: req.user.id, // optional but GOOD for audit
+    role:role,
+     createdBy: req.user.id, 
   } );
-
-     res.status(201).json({
-    success: true,
+   
+       res.status(201).json({
      message: "User created successfully",
-    user: {
-      id: user._id,
+            user: {
+         id: user._id,
         name: user.name,
        email: user.email,
        role: user.role,
     },
 
   });
+
     
 });
 
+// ----------------------------Getting  all Users
+
 export const getAllUsers=asyncHandler(async(req,res)=>{
    const users=await User.find();
+
   if(users.length==0)return res.status(200).json({message:"User not found"})
      return res.status(200).json({success:true, count: users.length,users});
 });
-
+//---------------------deleted all users
 export const deleteUser = asyncHandler(async (req, res) => {
+        //*Things to keep in mind in this call
+        //1.check id is there
+        //2.check user is there for the id 
+        //3.check user is not admin or it self
+        //4.delete user and 
+
+     
+     //1. checking id is there or not 
      const { id } = req.params;
-console.log("sg")
-     // 🔍 Check  if user  exists  
+     if(!id)return res.status(400).json({message:"All field are required"})
+
+     //2.  Check  if user  exists  
 
   const user = await User.findById(id);
   if (!user) {
@@ -80,26 +100,17 @@ console.log("sg")
 
   }
 
-     //  🚫 Prevent deleting self 
-  if (user._id.toString() === req.user.id) {
+     //3.   Prevent deleting self & admin 
+  if (user._id.toString() === req.user.id||user.role === "ADMIN") {
     return res.status(400).json({
         success: false,
-   message: "You cannot delete your own account",
+   message: "You cannot delete your own account or an admin account",
     
   });
   }
 
-  //    ❗ Optional: prevent deleting ADMIN
-  if (user.role === "ADMIN") {
-        return res.status(403).json({
-         success: false,
-         message: "Admin cannot be deleted",
-    });
 
-
-  }
-
-  //   🗑️ Delete user
+  //4    Delete user
   await  user.deleteOne();
 
    res.status(200).json({

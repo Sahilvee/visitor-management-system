@@ -77,72 +77,103 @@ function AdminUser()
   }, [search, roleFilter, users]);
 
 
+// ================= ADD USER =================
 
-  // ✅ Add User
-  const handleAddUser = async () => {
-    try {
-       setActionLoading("add");
+const handleAddUser = async () => {
 
-      const res = await api.post(
-        endpoints.ADMIN_CREATE_USERS,
-        form
-      );
+  setActionLoading("add");
 
-       setUsers((prev) => [res.data.user, ...prev]);
+  try {
 
-       showToast("User created ✅");
+    // api call
+    const response = await api.post(  endpoints.ADMIN_CREATE_USERS,  form);
 
-        setShowModal(false);
+    // new user
+    const newUser =  response.data.user;
+    // old users copy
+    const allUsers  = [...users];
+    // add new user at end
+    allUsers.push(newUser);
+    // update state
+    setUsers(allUsers);
+    // message
+     showToast("User created ✅");
 
-      setForm({
-        name: "",
-        email: "",
-         phone: "",
-         password: "",
-         role: "EMPLOYEE",
-      });
-    }  catch ( err ) {
-      showToast(
+    // close modal
+    setShowModal( false );
 
-        err.response?.data?.message || "Failed ❌",
-        "error"
-      );
-    }
-     finally
-      {
-      setActionLoading(null);
-    }
-  };
+    // clear inputs
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      role: "EMPLOYEE",
+    });
 
-            // ❌ Delete User
+  }
 
-  const handleDelete = async (id) => {
+  catch (error) {
 
-    const confirmDelete = window.confirm(
+    const message  = error.response?.data?.message;
 
-      "Delete this user?"
+    showToast(
+      message || "Failed ❌", "error"
+    );
+  }
+
+  finally {
+    setActionLoading(null);
+  }
+};
+
+   // ================= DELETE USER =================
+
+const handleDelete = async (id) => {
+
+  //  asking before deleting 
+  const ok = window.confirm(
+    "Delete this user?"
+  );
+
+  //  if cancel then stop
+  if (ok  === false) {
+    return;
+  }
+
+  try {
+     // start loading
+    setActionLoading(id);
+    // call delete api
+    await api.delete(`/admin/users/${id}`
     );
 
-    if (!confirmDelete) return;
+    // remove  deleted user
+    for (let  i =0;i < users.length;i++) {
 
-    try {
+        if (users[i]._id !== id)
+         {
+          updatedUsers.push(users[i]);
+      }
+    // update state
+     setUsers(updatedUsers);
+    // success message
+     showToast("User deleted 🗑️");
+  }
+  }
+  catch {
+// error message
+    showToast(
+      "Delete failed ❌",
+      "error"
+    );
+  }
 
-      setActionLoading(id);
-      await api.delete(`/admin/users/${id}`);
-
-
-      setUsers((prev) =>
-        prev.filter((u) => u._id !== id)
-      );
-
-        showToast("User deleted 🗑️");
-    } catch {
-         showToast("Delete failed ❌", "error");
-    } finally {
-       setActionLoading(null);
-    }
-  };
-
+  finally {
+    // stop loading at end
+    setActionLoading(null);
+  }
+};
   // 🔥 Status Style
       const getStatusStyle = (status) => {
     switch (status) {
@@ -190,7 +221,7 @@ function AdminUser()
 
          <button
            onClick={() => setShowModal(true)}
-           className="bg-blue-500 hover:bg-blue-600  text-white px-5 py-2.5  rounded-xl  shadow-sm transition"
+              className="bg-blue-500 hover:bg-blue-600  text-white px-5 py-2.5  rounded-xl  shadow-sm transition"
         >
           + Add User
         </button>
@@ -199,9 +230,9 @@ function AdminUser()
 
       {/* FILTERS */}
 
-      <div  className="bg-white rounded-2xl  shadow-sm border  border-gray-100 p-4">
+        <div  className="bg-white rounded-2xl  shadow-sm border  border-gray-100 p-4">
 
-        <div  className="flex  flex-col lg:flex-row  gap-4 lg:items-center lg:justify-between">
+         <div  className="flex  flex-col lg:flex-row  gap-4 lg:items-center lg:justify-between">
 
           {/* Search  */}
 
@@ -213,7 +244,7 @@ function AdminUser()
                onChange={(e) =>
                 setSearch(e.target.value)
               }
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-400 transition"
+                 className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-400 transition"
             />
           </div>
 
@@ -229,7 +260,7 @@ function AdminUser()
                <button
                 key={role}
                 onClick={() => setRoleFilter(role)}
-                className={` px-4 py-2  rounded-xl text-sm font-medium transition
+                 className={` px-4 py-2  rounded-xl text-sm font-medium transition
                 ${
                    roleFilter === role
                     ? "bg-blue-500 text-white shadow-sm"
@@ -241,7 +272,7 @@ function AdminUser()
                ))}
            </div>
         </div>
-      </div>
+         </div>
 
                    {/* TABLE */}
     {loading ? (
@@ -249,7 +280,7 @@ function AdminUser()
           < div className="w-10  h-10 border-4 border-gray-200  border-t-blue-500  rounded-full animate-spin"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
 
           <div  className=" overflow-x-auto">
@@ -261,7 +292,7 @@ function AdminUser()
 
                 <tr>
 
-                   <th className="p-5 text-left font-semibold">
+                    <th className="p-5 text-left font-semibold">
                      User
                   </th>
 
@@ -276,7 +307,7 @@ function AdminUser()
                      Status
                   </th>
 
-                  <th className="p-5 text-left font-semibold">
+                    <th className="p-5 text-left font-semibold">
                       Last Login
                   </th>
 
@@ -289,7 +320,7 @@ function AdminUser()
 
               </thead>
 
-              {/*  BODY */}
+                {/*  BODY */}
 
               <tbody>
 
@@ -302,7 +333,7 @@ function AdminUser()
                     >
 
                       {/*  USER  */}
-                      <td className="p-5">
+                       <td className="p-5">
 
                                <div className="flex items-center gap-3">
 
@@ -319,7 +350,7 @@ function AdminUser()
                             </p>
                           </div>
                           </div>
-                      </td>
+                        </td>
 
                       { /* CONTACT */ }
                        <td className="p-5 text-gray-600">
@@ -332,7 +363,7 @@ function AdminUser()
                         <span className="px-3  py-1 rounded-full  bg-blue-50 text-blue-600 text-xs font-medium  border border-blue-100">
                           {u.role}
                         </span>
-                      </td>
+                       </td>
 
                       {/* STATUS */}
 

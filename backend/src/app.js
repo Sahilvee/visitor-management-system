@@ -4,11 +4,12 @@ import authrouter  from '../routes/auth.js'
 import visitorroute from '../routes/visitor.js'
 
 import adminrouter from '../routes/admin.js'
-import appointmentRoutes from'../routes/appiontment.js'
+import appointmentRoutes from'../routes/appointment.js'
 import cors from 'cors'
 import path from "path"
 import { errorHandler } from '../middleware/errormiddleware.js';
-
+ 
+import exportrouter from '../routes/export.js'
 const app= express();
 app.use(express.json()); 
 app.use(cors({
@@ -22,6 +23,7 @@ app.use('/admin',adminrouter)
 app.use('/visitors',visitorroute)
 app.use('/users',userrouter);
 app.use("/appointments", appointmentRoutes);
+app.use("/export",exportrouter);
 
 app.use(errorHandler);
 

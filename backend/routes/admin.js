@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {authorizeRoles} from "../middleware/authmiddlerware.js";
 import { protect } from "../middleware/authmiddlerware.js";
-import { adminregister,getAllUsers ,deleteUser} from "../contoller/admincontroller.js";
+import { adminregister,getAllUsers ,deleteUser} from "../controller/admincontroller.js";
 
 const router= Router();
  

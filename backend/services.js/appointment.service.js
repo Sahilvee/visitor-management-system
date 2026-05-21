@@ -13,81 +13,62 @@ import {
    rejectionEmailTemplate,
   appointmentRequestTemplate,
 } from "../utils/appointmentTemplate.js";
+import PDFDocument from "pdfkit";
 
 
-// ======================================================
+// ====================================================== 
  // CREATE APPOINTMENT
  // ==================================================
 
-export const  createAppointmentService = async (
-   user,
-    body
-) => {
+export const  createAppointmentService = async (user,body) => {
+//         *Things to keep in mind in this call
+//1.check for the visitor record && check that all the required appointment details are there
+//2. get the start and end time 
+//3. check for slot conflict 
+//4. genarate track id and create appointment 
+//5. populate the data to get all the realted detail from different model
+//6. send mail 
+//7. return populated appointment details
+    const visitorId = user.visitorId;
+     const { hostId,visitPurpose,visitDate,duration}  = body;
 
- const visitorId = user.visitorId;
-
+ // 1. Check Visitor and Appointment details 
     const visitor = await Visitor.findById(visitorId);
 
-  if (!visitor ) {
-
-     throw new Error("Visitor not found");
+ 
+  if(!visitor||!hostId ||!visitPurpose || !visitDate ||!duration){
+                throw  new  Error (" All fields are required");
   }
 
-  const {
-
-    hostId,
-     visitPurpose,
-     visitDate,
-    duration,
-  }  = body;
-
-  if (
-    !hostId ||
-     !visitPurpose ||
-      !visitDate ||
-       !duration
-  ) {
-     throw  new  Error (" All fields are required");
-  }
-
-  // ===========  START & END TIME =================
+  // 2.  Start and End time 
   const start = new Date(visitDate );
 
    const end =  new Date(
-
     start.getTime() + duration * 60000
       );
 
-   // ================ SLOT CONFLICT CHECK ==============
-  const conflict  = await Appointment.findOne({
-   
-    hostId,
+   //3.  SLOT CONFLICT CHECK 
+ const conflict = await Appointment.findOne({
 
-    status: {
+  hostId,
 
-       $in: ["PENDING", "APPROVED"],
-    },
+  status: {
+    $in: ["PENDING", "APPROVED"],
+  },
+  visitDate: { $lt: end },
 
-    $or:  [
-      {
-        visitDate: { $lt: end },
-        endTime: { $gt: start },
-      },
-    ],
-
-  });
+  endTime: { $gt: start },
+});
 
   if  (conflict) {
        throw new Error("Time slot already booked ❌");
   }
+   //4.              -----CREATE APPOINTMENT----
+  
+   //TRACKING ID Creation
+  const trackingId = `APT-${crypto.randomBytes(4).toString("hex").toUpperCase()}`; 
 
-  // =================   TRACKING ID =================
-             const trackingId =
-    `APT-${crypto.randomBytes(4)
-      .toString("hex")
-      .toUpperCase()}`;
-
-     // ================ CREATE APPOINTMENT =================
+  
   const appointment =
        await Appointment.create({
 
@@ -106,18 +87,14 @@ export const  createAppointmentService = async (
        status: "PENDING",
     });
 
-     // =================  POPULATE DATA  =================
+     //5. =================  POPULATE DATA  =================
   const populatedAppointment =
-      await Appointment.findById(appointment._id)
-
-         .populate("hostId", "name")
-
-        .populate(
+   await Appointment.findById(appointment._id) .populate("hostId", "name").populate(
           "visitorId",
           "name email"
       );
 
-  // ================= EMAIL =================
+  //6. ================= EMAIL =================
       if (populatedAppointment.visitorId.email) {
 
        const html = appointmentRequestTemplate({
@@ -130,7 +107,7 @@ export const  createAppointmentService = async (
       visitDate:
         new Date(visitDate).toLocaleString(),
 
-       hostName:
+        hostName:
         populatedAppointment.hostId.name,
 
          trackingId,
@@ -138,23 +115,86 @@ export const  createAppointmentService = async (
 
      await sendEmail(
         {
-
        to:
         populatedAppointment.visitorId.email,
-
       subject:
         "Appointment Request Submitted",
-
       html,
     }
 );
   }
-
-  return {
-       data: populatedAppointment,
+// 7.
+ return {
+    statusCode: 201,
+    message:
+      "Appointment created successfully",
+    data: populatedAppointment,
   };
+ 
 };
 
+//   ======================================================
+//          SLOT DETAILS
+//  ======================================================
+
+//     *Things to keep in mind in this call
+// 1.check for the host id and date
+// 2. set the start and end date hour to get appointment details between that 
+//3. get appoitment with filter 
+//4. return response
+export   const slotDetailsService = async (
+  hostId,
+   date
+) =>  {
+//1.
+  if (!hostId || !date) {
+    throw new Error(
+      "HostId and date required"
+    );
+  }
+//2.
+  // ================= START OF DAY =================
+  const startOfDay = new Date(date);
+
+  startOfDay.setHours(0,0,0,0);
+
+  // ================= END OF DAY =================
+  const endOfDay = new Date(date);
+
+  endOfDay.setHours(
+    23,
+    59,
+     59,
+     999
+  );
+
+ const activeStatuses = [
+  "PENDING",
+  "APPROVED",
+  "CHECKED_IN",
+];
+//3.
+const response = await Appointment.find({
+
+  hostId,
+
+  visitDate: {
+    $gte: startOfDay,
+    $lte: endOfDay,
+  },
+
+  status: {
+    $in: activeStatuses,
+  },
+
+})
+.select("visitDate endTime status")
+.sort("visitDate");
+//4.
+  return  response;
+
+
+};
 
 //  ======================================================
 //    TRACK APPOINTMENT
@@ -356,6 +396,157 @@ export  const  approveAppointmentService = async (
   }
 );
 
+
+// ================= PDF =================
+
+const doc = new PDFDocument({
+
+   size: "A4",
+
+  margin: 50,
+
+});
+
+const  buffers = [];
+
+doc.on("data", (chunk) => {
+   buffers.push(chunk);
+});
+
+
+// ================= HEADER =================
+
+doc
+  .rect(40, 40, 515, 720)
+  .stroke("#0F172A");
+
+doc
+  .fontSize(24)
+  .fillColor("#0F172A")
+  .text(
+    "Visitor Pass",
+    180,
+    60
+  );
+
+doc
+  .moveDown(2);
+
+
+// ================= COMPANY =================
+
+doc
+  .fontSize(16)
+  .fillColor("#2563EB")
+  .text(
+    "Visitor Management System",
+    {
+      align: "center",
+    }
+  );
+
+doc.moveDown(2);
+
+
+// ================= VISITOR DETAILS =================
+
+doc
+  .fontSize(14)
+  .fillColor("black");
+
+doc.text(
+  `Visitor Name: ${appointment.visitorId.name}`
+);
+
+doc.moveDown();
+
+doc.text(
+  `Purpose: ${appointment.visitPurpose}`
+);
+
+doc.moveDown();
+
+doc.text(
+  `Visit Date: ${
+    new Date(
+      appointment.visitDate
+    ).toLocaleString()
+  }`
+);
+
+doc.moveDown();
+
+doc.text(
+  `Tracking ID: ${appointment.trackingId}`
+);
+
+doc.moveDown(2);
+
+
+// ================= STATUS =================
+
+doc
+  .fillColor("green")
+  .fontSize(16)
+  .text(
+    "STATUS: APPROVED",
+    {
+      align: "center",
+    }
+  );
+
+
+// ================= QR =================
+
+doc.image(
+
+  filePath,
+
+  200,
+
+  420,
+
+  {
+    width: 150,
+    height: 150,
+  }
+
+);
+
+
+// ================= FOOTER =================
+
+doc
+  .fillColor("gray")
+  .fontSize(10)
+  .text(
+
+    "Please show this pass at the reception desk.",
+
+    120,
+
+    650
+
+  );
+
+
+// ================= FINISH =================
+
+doc.end();
+
+const pdfBuffer =
+  await new Promise((resolve) => {
+
+    doc.on("end", () => {
+
+      resolve(
+        Buffer.concat(buffers)
+      );
+
+    });
+
+});
+
     await sendEmail({
 
     to:
@@ -366,13 +557,22 @@ export  const  approveAppointmentService = async (
 
      html,
 
-    attachments: [
-      {
-         filename: "qr.png",
-        path: filePath,
-        cid: "qrimage",
-      },
-    ],
+     attachments: [
+
+    {
+      filename: "qr.png",
+
+      path: filePath,
+
+      cid: "qrimage",
+    },
+
+    {
+      filename: "visitor-pass.pdf",
+
+      content: pdfBuffer,
+    },
+  ],
 
   });
 
@@ -559,71 +759,7 @@ console.log("res",{qrData} );
 };
 
 
-//   ======================================================
-//          SLOT DETAILS
-//  ======================================================
-export   const slotDetailsService = async (
-  hostId,
-   date
-) =>  {
 
-  if (!hostId || !date) {
-    throw new Error(
-      "HostId and date required"
-    );
-  }
-
-  // ================= START OF DAY =================
-  const startOfDay = new Date(date);
-
-  startOfDay.setHours(
-       0,
-         0,
-        0,
-       0
-  );
-
-  // ================= END OF DAY =================
-  const endOfDay = new Date(date);
-
-  endOfDay.setHours(
-    23,
-    59,
-     59,
-     999
-  );
-
-  const response =
-    await Appointment.find(
-      {
-          hostId:
-          new mongoose.Types.ObjectId(
-            hostId
-           ),
-
-
-        visitDate: {
-          $gte: startOfDay,
-          $lte: endOfDay,
-        },
-
-
-        status: {
-          $in: [
-             "PENDING",
-            "APPROVED",
-             "CHECKED_IN",
-          ],
-        },
-      },
-
-       "visitDate endTime status"
-    ).sort({ visitDate: 1 });
-
-  return  response;
-
-
-};
 
 
 //  ======================================================

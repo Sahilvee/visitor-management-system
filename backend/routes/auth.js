@@ -1,6 +1,6 @@
 import { Router } from "express";
-import {  authlogin } from "../contoller/authcontroller.js";
-import { createotp, verifyOtp } from "../contoller/otpcontroller.js";
+import {  authlogin } from "../controller/authcontroller.js";
+import { createotp, verifyOtp } from "../controller/otpcontroller.js";
 
 const router=Router();
 

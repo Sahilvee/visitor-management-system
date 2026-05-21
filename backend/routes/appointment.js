@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { approveAppointment, rejectAppointment,getAppointments } from "../contoller/appointmentcontroller.js";
+import { approveAppointment, rejectAppointment,getAppointments } from "../controller/appointmentcontroller.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {protect,authorizeRoles} from "../middleware/authmiddlerware.js";
 
-import { createAppointment, trackAppointment,appointment_CheckInAndCheckOut ,SlotDetails,checkSlotAvailability} from "../contoller/appointmentcontroller.js";
+import { createAppointment, trackAppointment,appointment_CheckInAndCheckOut ,SlotDetails,checkSlotAvailability} from "../controller/appointmentcontroller.js";
 const router = Router();
 
 

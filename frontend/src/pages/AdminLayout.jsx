@@ -56,7 +56,7 @@ function AdminLayout() {
                to="/admin_dashboard/users"
                  className="hover:bg-gray-700 p-3 rounded-xl transition"
           >
-              Users
+               Users
          </Link>
 
         </nav>

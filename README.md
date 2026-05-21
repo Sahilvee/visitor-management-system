@@ -1,4 +1,50 @@
-# demo video link :-
+## Acknowledgement of AI Assistance
+
+I would like to acknowledge the use of Artificial Intelligence (AI) tools, specifically ChatGPT, as a guidance and learning resource during the development of this project.
+
+AI assistance was mainly used to better understand development practices, improve code structure, debug issues, and learn the integration of third-party libraries and services. For example, during deployment I faced difficulties managing API endpoints manually across multiple API calls. To improve this, I sought guidance and learned the practice of creating a centralized endpoints file and importing endpoints wherever required.
+
+Similarly, while improving backend controllers, I learned better error-handling practices such as using a common async error-handling function instead of repeatedly writing try-catch blocks inside every API controller. AI guidance also helped me understand concepts related to project structure, service integration, and implementation details whenever I got stuck during development.
+
+AI assistance was also used while structuring and organizing the project documentation, including the README file structure and setup instructions.
+
+At the same time, I also referred to official documentation of libraries and services to understand their proper usage and implementation. The overall MVC project structure used in this project was based on concepts taught by my instructor, and several frontend practices such as error-handling pages were inspired by learnings from previous assignments.
+
+Initially, I was also not fully aware that AI tools could be used as a guidance and learning resource during development. Over time, I used them responsibly to improve my understanding of concepts and development practices rather than simply generating solutions without learning them.
+
+AI tools were used only as a support system for learning, guidance, and improving development practices. The final implementation, integration, debugging, and understanding of the project were completed by me.
+
+
+## Learning Outcomes
+
+Through the development of this project, I gained practical experience in full-stack web development using the MERN stack. I learned how to structure scalable backend applications using the MVC architecture, manage APIs efficiently, handle authentication and authorization, integrate third-party libraries and services, and work with MongoDB relationships using Mongoose.
+
+I also improved my understanding of error handling, reusable code practices, PDF generation, QR-based workflows, environment variable management, deployment practices, and project documentation. Working on this project helped me strengthen both problem-solving skills and real-world development practices.
+
+Additionally, I explored the use of AI tools as a learning and guidance resource to better understand development concepts, debugging approaches, and industry practices while continuing to refer to official documentation and course learnings throughout the project.
+
+
+# demo video link :-https://drive.google.com/file/d/14jSV8N3zBZEAGvT9ix33Tr-yS02itQ32/view?usp=drive_link
+
+# Screenshots
+
+## Home Page
+![alt text](image.png)
+
+## Appointment Booking
+![alt text](image-1.png)
+
+## Admin Dashboard
+![alt text](image-2.png)
+
+## Tracking Dashboard
+![alt text](image-3.png)
+
+## Visitor Registration 
+![alt text](image-4.png)
+
+## Front desk dashboard
+![alt text](image-5.png)
 
 # Frontend Overview
 
@@ -256,6 +302,7 @@ EMAIL_PASS=your_email_password
 npm run dev
 ```
 
+
 ---
 
 # Run Production Server
@@ -280,6 +327,12 @@ http://localhost:5000
 http://localhost:5000/
 ```
 
+---
+# Create dummy data
+---
+```bash
+npm run seed
+```
 ---
 
 # API Structure
@@ -494,23 +547,12 @@ npm start
 * Sms Notifications
 * Live Dashboard Analytics
 * Face Recognition Check-In
-* Calendar Integration
+
 
 
 ---
 
-# Screenshots
-
-## Home Page
-![alt text](image.png)
-
-## Appointment Booking
-![alt text](image-1.png)
-
-## Admin Dashboard
-![alt text](image-2.png)
 
 
-# Author
 
-Developed for smart digital visitor management and appointment handling.
+

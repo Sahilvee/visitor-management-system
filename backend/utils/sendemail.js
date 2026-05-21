@@ -15,7 +15,7 @@ export const sendEmail = async ({ to, subject, html,attachments = [] }) => {
     to,
     subject,
     html,
-    attachments // 🔥 THIS LINE FIXES EVERYTHING
+     attachments 
   });
 
 };
