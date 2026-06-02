@@ -9,19 +9,18 @@ const  endpoints = {
      SEND_OTP: "/auth/otp",
 
   // Verify OTP received by user
-  VERIFY_OTP: "/auth/otp",
+         VERIFY_OTP: "/auth/otp",
 
-  // =================  Visitor =================
+  // =================    Visitor =================
     //  Register a new visitor in the system
-   REGISTER_VISITOR: "/visitors",
+                 REGISTER_VISITOR: "/visitors",
 
-  // ================= APPOINTMENTS =================
-  // Create a new appointment
-  CREATE_APPOINTMENT: "/appointments",
+  //  ================= APPOINTMENTS =================
+  //    Create a new appointment
+             CREATE_APPOINTMENT: "/appointments",
 
    // Get details of a  specific appointment using ID
-  TRACK_APPOINTMENT: (appointmentId) =>
-    `/appointments/${appointmentId}`,
+     TRACK_APPOINTMENT: (appointmentId) => `/appointments/${appointmentId}`,
 
   // Get all appointments   (Admin use)
 ADMIN_APPOINTMENT: "/appointments",
@@ -30,20 +29,20 @@ ADMIN_APPOINTMENT: "/appointments",
   SLOT_DETAILS: "/appointments/slots",
 
   //  Validate if a slot is available or not
-  CHECK_SLOT: "/appointments/check-slot",
+    CHECK_SLOT: "/appointments/check-slot",
 
   //  Check-IN/OUT operations (Front desk)
-     FRONT_DESK: "/appointments/CheckInCheckOut",
-
-   // =================  ADMIN =================
-  // Admin  login  authentication
+         FRONT_DESK: "/appointments/CheckInCheckOut",
+ 
+    // =================  ADMIN =================
+         // Admin  login  authentication
       ADMIN_LOGIN: "/auth/login",
 
-  // Get all registered users (Admin only)
+        // Get all registered users (Admin only)
      ADMIN_GET_USERS: "/admin/users",
 
-   // Create new user (Admin only)
-    ADMIN_CREATE_USERS: "/admin/users",
+        // Create new user (Admin only)
+     ADMIN_CREATE_USERS: "/admin/users",
 
 
 };

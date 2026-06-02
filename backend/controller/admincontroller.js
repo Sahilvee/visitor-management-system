@@ -14,7 +14,7 @@ export const adminregister = asyncHandler(async (req, res) => {
     //  1. validation
   if  (!name || !email || !phone || !password || !role) 
     {
-    console.log("Not all required field is there in the api call by admin ....")
+       console.log("Not all required field is there in the api call by admin ....")
     return res.status(400).json({
        message: "All credentials are required",
      });
@@ -68,7 +68,7 @@ export const adminregister = asyncHandler(async (req, res) => {
     
 });
 
-// ----------------------------Getting  all Users
+  // ----------------------------Getting  all Users
 
 export const getAllUsers=asyncHandler(async(req,res)=>{
    const users=await User.find();
@@ -91,17 +91,19 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
      //2.  Check  if user  exists  
 
-  const user = await User.findById(id);
-  if (!user) {
+  const userRecord = await User.findById(id);
+  if (!userRecord) {
      return res.status(404).json({
        success: false,
-          message: "User not found",
+          message: "USER NOT FOUND ",
     });
 
   }
+      console.log(userRecord);
 
      //3.   Prevent deleting self & admin 
-  if (user._id.toString() === req.user.id||user.role === "ADMIN") {
+  if (userRecord._id.toString() === req.user.id|| userRecord.role === "ADMIN") {
+      
     return res.status(400).json({
         success: false,
    message: "You cannot delete your own account or an admin account",
@@ -111,10 +113,11 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
 
   //4    Delete user
-  await  user.deleteOne();
-
+    const deleteRes=await  userRecord.deleteOne();
+ console.log(deleteRes);
    res.status(200).json({
     success: true,
+    
       message: "User deleted successfully",
   });
 

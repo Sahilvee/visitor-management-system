@@ -11,53 +11,41 @@ import {
   checkSlotAvailabilityService,
 } from "../services.js/appointment.service.js";
 import { sendResponse } from "../utils/sendResponse.js";
-// ======================================================
+
+
+//         NOTE :- sir in previous feedback i was asked to try different different error handling technique here
+//                  because i was using only one type so i just searched on internet for different different teachnique 
+//                 and implemented here  so i just implemented as there written this time i will make it more raw in my own style
+   // ======================================================
 // CREATE APPOINTMENT
 //  handling from service
 // ======================================================
 
-export const createAppointment =
-asyncHandler(async (req, res) => {
- const result =
-     await createAppointmentService(
-       req.user,
-      req.body
-    );
-  res.status(result.statusCode)
-     .json(result);
+export const createAppointment = asyncHandler(async (req, res) => {
+ const  result =
+     await createAppointmentService( req.user,req.body);
+     res.status(result.statusCode).json(result);
 });
 
 
 
-// ======================================================
+// ===================================================
 //     TRACK APPOINTMENT
-// manual try catch
-// ======================================================
+//   manual try catch
+ //  =====================================================
 
 export const trackAppointment =
-async (req, res) => {
-
+async (req, res) => { 
   try {
-    const appointment_record =
-        await trackAppointmentService(
-        req.params.appointmentId
-      );
-
-    sendResponse(
-       res,
-        200,
-       true,
-       "Record found",
+    const appointment_record = await trackAppointmentService(req.params.appointmentId);
+ sendResponse(res,200,true,"Record found",
       {
-         appointment_record,
+          appointment_record,
        }
     );
   }
-  catch (error) {
-     res.status(500).json({
-        success: false,
-         message:
-        error.message || "Something went wrong",
+   catch ( error ) {
+  res.status(500).json({ success: false, message:error.message || "Something went wrong",
       });
 
   }
@@ -66,182 +54,131 @@ async (req, res) => {
 
 
 
-// ======================================================
-//   GET APPOINTMENTS
-// inline validation style
+//   ======================================================
+ //      GET APPOINTMENTS
+ //  inline validation style
 // ======================================================
 
-export  const getAppointments  =
-asyncHandler (async (req, res) => {
-
-  const  result  =
-    await getAppointmentsService(
-      req.user
-    );
+export   const  getAppointments   =asyncHandler  (async (req, res) => {
+  const  result  =await getAppointmentsService(  req.user );
 
   if  (!result)  {
-    return res.status(404).json({
-       success: false,
-       message: "No appointments found",
+    return res.status(404).json({ success: false, message: "No appointments found",
     });
   }
 
-res.status(200).json({
-      success: true,
-       stats: result.stats,
-    appointments: result.appointments,
-   });
-
-});
+res.status(200).json({ success: true, stats: result.stats,appointments: result.appointments});
+}
+);
 
 
 
 // ======================================================
-//   APPROVE APPOINTMENT
-// Throw Based Error Handling
+//     APPROVE APPOINTMENT
+//  Throw Based  Error  Handling
 // ======================================================
 
 export const approveAppointment =
 asyncHandler(async (req, res) => {
-
-  const appointment =
-    await approveAppointmentService(
-      req.params.appointmentId,
-      req.user
-    );
-
+  const appointment =  await approveAppointmentService( req.params.appointmentId, req.user);
  
   if (!appointment) {
+ const error =  new Error("Approval Failed ");
+  error.statusCode = 404;
 
-const error = new Error("Approval Failed ");
-
-error.statusCode = 404;
-
-throw error;
+ throw error;
   }
 
-  res.json({
-    success: true,
-    message:
-      "Appointment approved and email sent",
-    appointment,
-  });
-});
+  res.json({success: true,message: "Appointment approved and email sent", appointment,});
+}
+);
 
 
 
-// ======================================================
-// REJECT APPOINTMENT
+ //   ==========================================
+// REJECT APPOINTMENT  
 //  nested try catch
-// ======================================================
+// ====================================================
 
-export const rejectAppointment =
-asyncHandler(async (req, res) => {
+export const  rejectAppointment =  asyncHandler(async ( req, res) => {
 
   try {
-     const appointment =
-      await rejectAppointmentService(
-        req.params.appointmentId,
-        req.body.reason
-      );
+     const appointment  = await rejectAppointmentService(req.params.appointmentId,req.body.reason) ;
 
     res.json(
       { 
-
       success: true,
-      message:
+       message:
           "Appointment rejected and email sent",
       appointment,
-    });
+     });
 
   }
 
   catch {
-    res.status(400).json({
-        success: false,
-      message:
-         "Unable to reject appointment",
-    });
-
+      res.status(400).json({
+          success: false,
+      message:"Unable to reject appointment",
+      });
   }
 });
 
 
 
-// ======================================================
+  //   ====================================================
 //  CHECK-IN /  CHECK-OUT
 // simple  conditional handling
-//  ================================================
+//  ===============================================
 
 export  const  appointment_CheckInAndCheckOut  =
 asyncHandler ( async (req, res) => {
 
-  const  result  =
+  const  result  = await  appointmentCheckService( req.body.qrData );
 
-    await  appointmentCheckService(
-       req.body.qrData
-    );
-
-  if  (result.success ===  false) {
-
-     return res.status(400).json(result);
+  if  ( result.success ===  false) {
+      return res.status(400).json(result);
   }
 
   res.json(result);
-});
-
+}
+);
 
 
 //    ======================================================
-//  SLOT DETAILS
+//       SLOT DETAILS
 // validation first approach
 // ======================================================
 
-export const SlotDetails =
-  asyncHandler(async (req, res) => {
+export const SlotDetails = asyncHandler(async (req, res) => {
 
   if  (!req.params.hostId ) {
 
     return  res.status(400).json({
        success: false,
-      message: "Host id required",
+           message: "Host id required",
     });
 
   }
-
-  const response =
-     await slotDetailsService(
-        req.params.hostId,
-        req.query.date
-    );
-
-   res.json(response);
-
+  const response = await slotDetailsService( req.params.hostId, req.query.date);
+   res.json( response);
 
 });
 
 
 
-// ======================================================
-//   CHECK SLOT AVAILABILITY
-// fallback response handling
-//  ====================================================
+// ===================================================
+ //   CHECK SLOT AVAILABILITY
+//  fallback response handling
+ //   ===================================================
 
 export const checkSlotAvailability =
  asyncHandler( async (req, res) => {
 
   const  result  =
-     await checkSlotAvailabilityService(
+        await checkSlotAvailabilityService(
       req.body
     );
 
-   res.json(
-    result ||  {
-      success: false,
-       message: "No slot data found",
-    }
-
-
-  );
-  
+   res.json( result ||  {  success: false, message: "No slot data found"}
+  ); 
 });

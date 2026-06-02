@@ -122,77 +122,118 @@ const showToast  = (message, type = "success")  => {
 // 2. perform iteration on each 
 // 3. check there status and seach match 
 // 4. if both true only then to add 
- const filteredAppointments = useMemo(() => {
+//  const filteredAppointments = useMemo(() => {
 
-  let data = [];
+//   let data = [];
 
-  for (let i = 0; i < appointments.length; i++) {
+//   for (let i = 0; i < appointments.length; i++) {
 
-    const appointment = appointments[i];
+//     const appointment = appointments[i];
 
-    // status check
-    let statusMatch = false;
+//     // status check
+//     let statusMatch = false;
 
-    if (statusFilter === "ALL") {
-      statusMatch = true;
-    }
-    else if (appointment.status === statusFilter) {
-      statusMatch = true;
-    }
+//     if (statusFilter === "ALL") {
+//       statusMatch = true;
+//     }
+//     else if (appointment.status === statusFilter) {
+//       statusMatch = true;
+//     }
 
-    // search check
-    let searchMatch = false;
+//     // search check
+//     let searchMatch = false;
 
-    if (search.trim() === "") {
-      searchMatch = true;
-    }
-    else {
+//     if (search.trim() === "") {
+//       searchMatch = true;
+//     }
+//     else {
 
-      const text = search.toLowerCase();
+//       const text = search.toLowerCase();
 
-      if (
-        appointment.trackingId
-          ?.toLowerCase()
-          .includes(text)
-      ) {
-        searchMatch = true;
+//       if (
+//            appointment.trackingId
+//           ?.toLowerCase()
+//           .includes(text)
+//       ) {
+//         searchMatch = true;
+//       }
+
+//       else if (
+//         appointment.visitorId?.name
+//           ?.toLowerCase()
+//           .includes(text)
+//         ) {
+//         searchMatch = true;
+//        }
+
+//          else if (
+//         appointment.hostId?.name
+//           ?.toLowerCase()
+//           .includes(text)
+//         ) {
+//           searchMatch = true;
+//       }
+//     }
+
+//       // final condition
+//     if (statusMatch && searchMatch) {
+//       data.push(appointment);
+//     }
+//   }
+
+//     return data;
+
+// }, [appointments, search, statusFilter]);
+
+const filteredAppointments =useMemo(()=>{
+  let filteredData=[];
+  console.log("***************")
+  console.log("appointment :",appointments);
+
+ filteredData = appointments.filter((ele,index)=>{
+  console.log("-----------");
+      console.log("appointment :",index);
+ 
+
+      console.log("searched status (",statusFilter,'-',ele.status,")");
+    let text=search.toLowerCase();
+    console.log("searched term - ",text);
+      if(statusFilter=="ALL"){
+          console.log("-status matched");
+          if(text.trim()==""||ele.hostId?.name?.toLowerCase().includes(text)|| ele.visitorId?.name?.toLowerCase().includes(text)|| ele.trackingId?.toLowerCase().includes(text)){
+          console.log("-search result matched")
+  return true;
+        }else{
+          console.log("status not matched");
+        }
+      }else if(ele.status===statusFilter){
+      
+          console.log("-status matched");
+          if(text.trim()==""||ele.hostId?.name?.toLowerCase().includes(text)|| ele.visitorId?.name?.toLowerCase().includes(text)|| ele.trackingId?.toLowerCase().includes(text)){
+          console.log("-search term matched")
+  return true;
+        }else{
+            console.log("-search term not matched");
+        }
+      }
+    else{
+        console.log("-status not matched");
+        console.log("-search term not matched");
+        return false;
       }
 
-      else if (
-        appointment.visitorId?.name
-          ?.toLowerCase()
-          .includes(text)
-      ) {
-        searchMatch = true;
-      }
-
-      else if (
-        appointment.hostId?.name
-          ?.toLowerCase()
-          .includes(text)
-      ) {
-        searchMatch = true;
-      }
-    }
-
-    // final condition
-    if (statusMatch && searchMatch) {
-      data.push(appointment);
-    }
-  }
-
-  return data;
-
-}, [appointments, search, statusFilter]);
-
+     })
+  return filteredData;
+    
+},[appointments,statusFilter,search]);
 
   // STATS
   const stats = useMemo(() => {
      return {
-       total: appointments.length,
-       pending: appointments.filter((a) => a.status === "PENDING").length,
+         total: appointments.length,
+      pending: appointments.filter((a) => a.status === "PENDING").length,
         approved: appointments.filter((a) => a.status === "APPROVED").length,
-        rejected: appointments.filter((a) => a.status === "REJECTED").length,
+          rejected: appointments.filter((a) => a.status === "REJECTED").length,
     };
   },  [appointments]);
 
@@ -202,11 +243,9 @@ const showToast  = (message, type = "success")  => {
   try {
        setActionLoading(id);
 
-       const res = await api.patch(`/appointments/${id}/approve`);
+         const res = await api.patch(`/appointments/${id}/approve`);
 
-       setAppointments((prev) =>
-           prev.map((a) =>
-             a._id === id ? res.data.appointment : a
+       setAppointments((prev) => prev.map((a) => a._id === id ? res.data.appointment : a
         )
       );
 
@@ -215,7 +254,7 @@ const showToast  = (message, type = "success")  => {
     } catch (err) {
 
       console.error(err);
-       showToast("Approval failed ❌", "error");
+         showToast("Approval failed ❌", "error");
     }  finally {
        setActionLoading(null);
     }
@@ -224,10 +263,9 @@ const showToast  = (message, type = "success")  => {
   //  REJECT
   const  submitReject =  async () => {
     try {
-       setActionLoading(rejectModal.id);
+         setActionLoading(rejectModal.id);
 
-         const res = await api.patch(
-        `/appointments/${rejectModal.id}/reject`,
+         const res = await api.patch(`/appointments/${rejectModal.id}/reject`,
         {
            reason: rejectModal.reason,
         }
@@ -285,16 +323,14 @@ const showToast  = (message, type = "success")  => {
       "download",
       "appointments-report.pdf"
     );
-
     document.body.appendChild(link);
 
     // auto click
     link.click();
-
     // cleanup
-    link.remove();
+     link.remove();
 
-    window.URL.revokeObjectURL(url);
+     window.URL.revokeObjectURL(url);
 
   } catch (err) {
 
@@ -304,7 +340,7 @@ const showToast  = (message, type = "success")  => {
 };
 
   return (
-     <div className="min-h-screen bg-gray-50 p-6 space-y-6">
+      <div className="min-h-screen bg-gray-50 p-6 space-y-6">
 
                                    {/* TOAST */}
       { toast && (
@@ -315,7 +351,7 @@ const showToast  = (message, type = "success")  => {
              toast.type === "error"
                ? "bg-red-500"
               : "bg-green-500"
-          }`}
+            }`}
         >
           {toast.message}
         </div>
@@ -327,11 +363,11 @@ const showToast  = (message, type = "success")  => {
         <div>
             <h1 className="text-3xl font-bold text-gray-800">
             Appointment Management
-          </h1>
+           </h1>
 
                <p className="text-gray-500 mt-1">
             Manage all visitor appointments
-          </p>
+           </p>
         </div>
 
                 {/* SEARCH */}
@@ -349,17 +385,17 @@ const showToast  = (message, type = "success")  => {
              onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-white border border-gray-100 rounded-xl pl-10 pr-4 py-3 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-300"
           />
-        </div>
+          </div>
         <button onClick={downloadPDF}>
   Export PDF
 </button>
       </div>
 
-      { /* STATS   */}
-      <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+         { /* STATS   */}
+        <div className= "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
  
 
-        <div className="bg-white rounded-2xl p-5 shadow-sm border  border-gray-100">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border  border-gray-100">
 
           <div className =" flex justify-between items-center">
 
@@ -369,14 +405,14 @@ const showToast  = (message, type = "success")  => {
 
               </p>
 
-              <h2  className="text-3xl font-bold mt-1" >
+                <h2  className="text-3xl font-bold mt-1" >
                  {stats.total}
               </h2>
 
 
             </div>
 
-            <div  className= " bg-indigo-50  p-3 rounded-xl">
+              <div  className= " bg-indigo-50  p-3 rounded-xl">
            
               <CalendarDays className="text-indigo-500" />
             </div>
@@ -386,10 +422,10 @@ const showToast  = (message, type = "success")  => {
         </div>
  
 
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center">
-            <div>
-                <p className="text-gray-500 text-sm">
+              <div>
+                 <p className="text-gray-500 text-sm">
                 Pending
               </p>
 
@@ -401,15 +437,15 @@ const showToast  = (message, type = "success")  => {
               <div className="bg-yellow-50 p-3 rounded-xl">
                    <Clock3 className="text-yellow-500" />
             </div>
-          </div>
+            </div>
         </div>
 
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                      <div className="flex justify-between items-center">
             <div>
               <p className="text-gray-500 text-sm">
-                    Approved
-              </p>
+                     Approved
+                </p>
 
                <h2 className="text-3xl font-bold text-green-600 mt-1">
                 {stats.approved}
@@ -417,7 +453,7 @@ const showToast  = (message, type = "success")  => {
             </div>
 
             <div className="bg-green-50 p-3 rounded-xl">
-              <CheckCircle2 className="text-green-500" />
+                <CheckCircle2 className="text-green-500" />
                       </div>
           </div>
 
@@ -425,7 +461,7 @@ const showToast  = (message, type = "success")  => {
         </div>
 
         <div  className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center">
             <div>
 
                <p className = "text-gray-500 text-sm ">
@@ -446,7 +482,7 @@ const showToast  = (message, type = "success")  => {
 
           </div>
 
-        </div>
+         </div>
 
       </div>
 
@@ -661,140 +697,108 @@ const showToast  = (message, type = "success")  => {
 
       {     /* DETAILS MODAL  */     }
 
-      { selectedAppointment   && (
-               <div className="fixed  inset-0  bg-black/30  backdrop-blur-sm z-50 flex justify-center items-center p-4">
+      {selectedAppointment && (
+  <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
 
-          <div className = "bg-white w-full max-w-lg   rounded-3xl shadow-xl  p-6 relative border   border-gray-100">
+    <div className="bg-white w-[90%] max-w-md rounded-xl p-6 relative ">
 
-            <button
-               onClick={() => setSelectedAppointment(null)}
+      {/* Close Button */}
+      <button onClick={() => setSelectedAppointment(null)} className="absolute top-3 right-4 text-xl"
+      >
+         ✕
+      </button>
 
-               className="absolute top-4 right-5 text-gray-400 hover:text-black text-xl"
-            >
-                ✕ 
-
-            </button>
-
-             <h2 className =" text-2xl font-bold  text-gray-800 mb-6">
-                 Appointment Details
-               </h2 >
-
-            <div   className="space-y-4 text-sm" 
-            >
-
-              <div  className="  grid grid-cols-2  gap-4">
-
-                <div className="bg-gray-50/70  p-4 rounded-xl" >
-                 
-                 
-                  <p  className="text-gray-500  text-xs ">
-                       Tracking ID
-                   </p>
-
-                   <p  className="font-semibold mt-1" >
-                     { selectedAppointment.trackingId }
-                  </p>
-
-
-                </div>
-
-                <div  className="bg-gray-50/70 p-4 rounded-xl">
-                   <p  className="text-gray-500 text-xs">
-                                  Status
-                  </p>
-
-                  <div  className="mt-2">
-
-
-                     <span
-                      className={ `px-3  py-1 rounded-full text-xs font-semibold  ${getStatusStyle(
-                        selectedAppointment.status
-                        )}`}
-                    >
-                         {selectedAppointment.status}
-                     </span>
-                  </div>
-
-                </div>
-              </div>
-
-                        <div className="bg-gray-50/70 p-4 rounded-xl">
-                <p  className= "text-gray-500 text-xs ">
-                   Visitor
-                    </p>
-
-                <p   className="font-semibold mt-1">
-                   {  selectedAppointment.visitorId?.name }
-                </p>
-
-                    <p className="text-gray-500 text-sm ">
-                  {selectedAppointment.visitorId?.email }
-                </p>
-              </div>
-
-              <div  className="bg-gray-50/70 p-4 rounded-xl">
-                 <p  className="text-gray-500 text-xs">
-                   Host 
-                  </p>
-
-                 <p className="font-semibold mt-1">
-                  {selectedAppointment.hostId?.name}
-                </p>
-       </div> 
-
-                     <div className="bg-gray-50/70 p-4 rounded-xl">
-                <p  className=" text-gray-500  text-xs">
-                  Purpose
-
-                </p>
-
-                
-                <p className="font-semibold mt-1">
-                 
-                    {selectedAppointment.visitPurpose}
-                </p>
-              </div>
-
-              <div className="bg-gray-50/70 p-4 rounded-xl">
-                
                
-                   <p className="text-gray-500 text-xs">
-                 
-                   Date & Time
-                </p>
+      <h2 className=" text-2xl font-bold mb-5">
+           Appointment Details
+      </h2>
 
-                <p className="font-semibold mt-1">
-                 
-                 
-                     {formatDateTime(
-                    selectedAppointment.visitDate,
-                    selectedAppointment.endTime
-                  )}
-                </p>
-                 </div>
+      {/* Details */}
+      <div className="space-y-4">
 
-                 {selectedAppointment.rejectionReason  && (
-                <div className="bg-red-50/70 p-4 rounded-xl">
-                  <p  className="text-red-500 text-xs " >
-                    Rejection Reason
-                  </p>
- 
-                   <p className="text-red-700 font-medium mt-1">
-                    {selectedAppointment.rejectionReason}
-                    </p>
+        <div>
+          <p className="text-gray-500 text-sm">
+            Tracking ID
+          </p>
 
-                </div>
-            )}
-            </div>
-               </div>
-
-
+          <p className="font-semibold">
+            {selectedAppointment.trackingId}
+          </p>
         </div>
-         )}
 
+        <div>
+           <p className="text-gray-500 text-sm">
+             Status
+          </p>
+          <span
+            className={`px-3 py-1 rounded text-white text-sm ${getStatusStyle(selectedAppointment.status)}`}
+           >
+            {selectedAppointment.status}
+           </span>
+        </div>
+
+        <div>
+          <p className=" text-gray-500 text-sm">
+             Visitor
+            </p>
+           <p className=" font-semibold">
+            {selectedAppointment.visitorId?.name}
+          </p>
+
+          <p className="text-sm text-gray-500">
+            { selectedAppointment.visitorId?.email}
+          </p>
+        </div>
+
+        <div>
+          <p  className="text-gray-500 text-sm">
+               Host
+          </p>
+
+          <p className="font-semibold">
+            {selectedAppointment.hostId?.name}
+            </p>
+        </div>
+
+        <div>
+          <p className="text-gray-500 text-sm">
+            Purpose
+            </p>
+
+          <p className="font-semibold">
+             {selectedAppointment.visitPurpose}
+           </p>
+          </div>
+
+        <div>
+          <p className="text-gray-500 text-sm">
+               Date & Time
+          </p>
+
+          <p className="font-semibold">
+             {formatDateTime(selectedAppointment.visitDate,selectedAppointment.endTime)}
+           </p>
+           </div>
+
+        { selectedAppointment.rejectionReason && (
+          <div>
+            <p className="text-red-500 text-sm">
+                Rejection Reason
+            </p>
+
+            <p className="text-red-700  font-semibold">
+                 {selectedAppointment.rejectionReason}
+            </p>
+          </div>
+        )}
+
+      </div>
+     </div>
+  </div>
+)}
                    { /* REJECT MODAL */ }
       { rejectModal.open  &&  (
-        <div  className="fixed inset-0  bg-black/30 backdrop-blur-sm z-50 flex  justify-center items-center p-4  " >
+          <div  className="fixed inset-0  bg-black/30 backdrop-blur-sm z-50 flex  justify-center items-center p-4  " >
 
           <div className = "bg-white w-full  max-w-md rounded-2xl  shadow-xl p-6 border border-gray-100" > 
 
@@ -805,49 +809,36 @@ const showToast  = (message, type = "success")  => {
             <textarea
                 rows={4}
                   value={rejectModal.reason}
-                     onChange={(e) =>
-                setRejectModal({
-                  ...rejectModal,
-                  reason: e.target.value,
-                })
+                      onChange={(e) =>setRejectModal({ ...rejectModal,reason: e.target.value })
               }
-                placeholder="Enter rejection reason..."
-                 className="w-full border border-gray-100 rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-red-300"
+                placeholder=" Enter  rejection reason..."
+                  className="w-full border border-gray-100 rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-red-300"
             />
 
          <div className="flex justify-end gap-3 mt-5">
 
-                  <button
-                   onClick={() =>
-                  setRejectModal({
-                    open: false,
-                    id: null,
-                    reason: "",
-                  })
+                  <button onClick={() => setRejectModal({ open: false,id: null,reason: ""})
                 }
                    className="px-5 py-2 rounded-lg hover:bg-gray-100 transition"
               >
                
                 Cancel
-              </button>
+                </button>
 
-              <button
-                onClick={submitReject}
-                className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg transition"
+              <button onClick={submitReject} className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg transition"
               >
-                Confirm Reject
-          </button>
+                 Confirm Reject
+               </button>
             </div>
 
           </div>
 
         </div>
       )}
-    </div>
+       </div>
 
 
   );
-
 }
 
 

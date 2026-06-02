@@ -26,7 +26,7 @@ function AdminVisitor() {
     try {
        setLoading(true);
        const res = await api.get("/visitors");
-      setVisitors(res.data.visitors);
+       setVisitors(res.data.visitors);
     } catch {
       showToast("Failed to load visitors ❌", "error");
     } finally {
@@ -41,16 +41,16 @@ function AdminVisitor() {
   // ✅ Verify
    const handleVerify = async (id) => {
     try {
-       setActionLoading(id);
+        setActionLoading(id);
 
-    const res = await api.patch(`/visitors/${id}/verify`);
+      const res = await api.patch(`/visitors/${id}/verify`);
 
        setVisitors((prev) =>
                  prev.map((v) => (v._id === id ? res.data.visitor : v))
       );
 
       if (selectedVisitor?._id === id) {
-         setSelectedVisitor(res.data.visitor);
+           setSelectedVisitor(res.data.visitor);
       }
 
        showToast("Visitor verified ✅");
@@ -63,7 +63,7 @@ function AdminVisitor() {
 
            // ❌ Delete
   const handleDelete = async (id) => {
-    const confirm = window.confirm("Delete this visitor?");
+      const confirm = window.confirm("Delete this visitor?");
      if (!confirm) return;
 
      try {
@@ -71,7 +71,7 @@ function AdminVisitor() {
 
       await api.delete(`/visitors/${id}`);
 
-        setVisitors((prev) => prev.filter((v) => v._id !== id));
+          setVisitors((prev) => prev.filter((v) => v._id !== id));
 
       if (selectedVisitor?._id === id) {
         setSelectedVisitor(null);
@@ -277,11 +277,11 @@ function AdminVisitor() {
 
                     {/* 🪪 ID */}
                              <td className="px-6 py-4">
-                        <p className="text-gray-700">
+                          <p className="text-gray-700">
                           {v.idType || "-"}
                         </p>
 
-                        <p className="text-xs text-gray-400 mt-1">
+                          <p className="text-xs text-gray-400 mt-1">
                           {v.idNumber || ""}
                         </p>
                       </td>
@@ -289,10 +289,10 @@ function AdminVisitor() {
                               {/* 👤 Created By */}
                       <td className="px-6 py-4 text-gray-700">
                          {v.createdBy}
-                      </td>
+                        </td>
 
                        {/* ✅ Status */}
-                      <td className="px-6 py-4">
+                       <td className="px-6 py-4">
                         <span
                            className={`px-3 py-1 rounded-full text-xs font-medium
                            ${
@@ -305,8 +305,8 @@ function AdminVisitor() {
                          </span>
                       </td>
 
-                     {/* ⚙ Actions */}
-                       <td className="px-6 py-4">
+                   {/*  Actions */}
+                          <td className="px-6 py-4">
                          <div className="flex items-center gap-2">
 
                              {!v.verified && (
@@ -316,9 +316,9 @@ function AdminVisitor() {
                                 handleVerify(v._id);
                               }}
                                      className="bg-green-500 hover:bg-green-600 text-white
-                                      px-3 py-1.5 rounded-lg text-xs font-medium transition"
+                                       px-3 py-1.5 rounded-lg text-xs font-medium transition"
                             >
-                              {actionLoading === v._id ? "..." : "Verify"}
+                                {actionLoading === v._id ? "..." : "Verify"}
                             </button>
                           )}
 
@@ -342,14 +342,14 @@ function AdminVisitor() {
 
                 ) : (
 
-                  <tr>
-                     <td
+                    <tr>
+                       <td
                       colSpan="7"
                       className="text-center py-14 text-gray-400"
                     >
                       No visitors found
                      </td>
-                  </tr>
+                    </tr>
                 )}
 
               </tbody>
@@ -365,155 +365,128 @@ function AdminVisitor() {
 
 
       { selectedVisitor && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-
+         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50 p-4">
            <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-
-             {/* Header */}
+                 {/* Header */}
              <div className="h-32 bg-gradient-to-r from-slate-700 to-slate-900 relative">
 
-              <button
-
-                onClick={() => setSelectedVisitor(null)}
+              <button onClick={() => setSelectedVisitor(null)}
                 className="absolute top-4 right-4 text-white/80 hover:text-white text-lg"
-              >
-                ✕
-              </button>
+              >✕</button>
 
 
               <div className="absolute -bottom-12 left-8">
-                <img
-                  src={
-                     selectedVisitor.photoUrl
-                      ? `${BASE_URL}${selectedVisitor.photoUrl}`
-                      : `${BASE_URL}/uploads/default.png`
-                  }
-                   alt="visitor"
-                  className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-lg"
+              <img src={
+                     selectedVisitor.photoUrl? `${BASE_URL}${selectedVisitor.photoUrl}`: `${BASE_URL}/uploads/default.png` }alt="visitor" className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-lg"
                 />
 
               </div>
-
-            </div>
+              </div>
 
             {/* Content */}
 
-            <div className="pt-16 px-8 pb-8">
-
-              <div className="flex items-start justify-between flex-wrap gap-4">
-
+            <div className="pt-16 px-8  pb-8">
+                <div className="flex  items-start justify-between flex-wrap gap-4">
                 <div>
-                   <h2 className="text-2xl font-bold text-gray-800">
+                    <h2 className=" text-2xl font-bold text-gray-800">
                     {selectedVisitor.name}
                   </h2>
 
                   <p className="text-gray-500 mt-1">
                     {selectedVisitor.email || "No email available"}
                   </p>
-                </div>
+                   </div>
 
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium
+                    className={`px-3 py-1 rounded-full text-xs font-medium
                    ${
-                    selectedVisitor.verified
+                      selectedVisitor.verified
                       ? "bg-green-50 text-green-600"
                       : "bg-red-50 text-red-500"
                   }`}
                 >
-                  {selectedVisitor.verified
-                    ? "Verified"
+                 {selectedVisitor.verified
+                      ? "Verified"
                     : "Not Verified"}
-                 </span>
+                   </span>
 
-              </div>
+            </div>
 
-               {/* Info Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
-
-                <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                  <p className="text-xs text-gray-500 mb-1">Phone</p>
-                  <p className="font-medium text-gray-800">
-                    {selectedVisitor.phone}
+                                      {/* Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
+  <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                   <p className="text-xs text-gray-500 mb-1">Phone</p>
+                    <p className="font-medium text-gray-800"> {selectedVisitor.phone}
                   </p>
                 </div>
  
                 <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                  <p className="text-xs text-gray-500 mb-1">Created By</p>
-                   <p className="font-medium text-gray-800">
-                    {selectedVisitor.createdBy}
+                 
+                   <p className="text-xs text-gray-500 mb-1">Created By</p>
+                   <p className="font-medium text-gray-800">{selectedVisitor.createdBy}
                   </p>
                 </div>
 
                 <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
                   <p className="text-xs text-gray-500 mb-1">ID Type</p>
-                  <p className="font-medium text-gray-800">
-                     {selectedVisitor.idType || "-"}
-                  </p>
+                  <p className="font-medium text-gray-800"> {selectedVisitor.idType || "-"}
+                    </p>
                 </div>
 
-                 <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                  <p className="text-xs  text-gray-500 mb-1" >ID Number</p>
-                  <p className="font-medium text-gray-800">
-                     {selectedVisitor.idNumber || "-"}
-                  </p>
-                </div>
-
+            <div className="bg-gray-50  rounded-2xl p-4  border border-gray-100">
+                  <p className="text-xs   text-gray-500 mb-1 " >ID Number</p>
+                  <p  className=" font-medium text-gray-800  ">{selectedVisitor.idNumber || "-"}
+                    </p>
+                  </div>
               </div>
 
                               {/* Visitor ID */}
-              <div className=" mt-5 bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <p className="text-xs text-gray-500  mb-1">Visitor ID</p>
-                <p className="text-sm  text-gray-700 break-all">
+             <div  className=" mt-5 bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                 <p className=" text-xs text-gray-500   mb-1">Visitor ID</p>
+                <p className=" text-sm  text-gray-700  break-all">
                       {selectedVisitor._id}
                 </p>
               </div>
 
                            {/* Date */}
               <div className="mt-5 bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                <p className="text-xs text-gray-500 mb-1">Created At</p>
-                <p className="text-sm text-gray-700">
-                  {new Date(selectedVisitor.createdAt).toLocaleString()}
+                 <p className="text-xs  text-gray-500  mb-1"> Created At </p>
+                <p className="text-sm text-gray-700"> {new Date(selectedVisitor.createdAt).toLocaleString()}
                 </p>
               </div>
 
               {/*  Buttons */}
-                        <div className="flex justify-end gap-3 mt-8">
+                         <div className="flex justify-end gap-3 mt-8">
 
                 { !selectedVisitor.verified && (
-                  <button
-                    onClick={() => handleVerify(selectedVisitor._id)}
-                    className="bg-green-500 hover:bg-green-600 text-white
-                    px-5 py-2.5 rounded-xl text-sm font-medium transition"
+                      <button onClick={() => handleVerify(selectedVisitor._id)}className="bg-green-500 hover:bg-green-600 text-whitepx-5 py-2.5 rounded-xl text-sm font-medium transition"
                   >
                      Verify  Visitor
                   </button>
                 )}
 
                 <button
-                   onClick={() => handleDelete(selectedVisitor._id)}
-                   className="bg-red-500 hover:bg-red-600 text-white
-                  px-5 py-2.5 rounded-xl text-sm font-medium transition"
+                   onClick={() => handleDelete(selectedVisitor._id)} className="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition"
                 >
                    Delete Visitor
                 </button>
 
               </div>
-
             </div>
-
           </div>
 
 
-        </div>
+           </div>
       )}
 
 
-    </div>
+       </div>
 
   );
 
 
   
 }
+  
 
 export default AdminVisitor;

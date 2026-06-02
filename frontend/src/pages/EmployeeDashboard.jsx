@@ -125,41 +125,36 @@ export default function EmployeeDashboard() {
              // FILTERED DATA
 const  filteredAppointments = useMemo(() => {
 
-    return appointments.filter((a) => {
+      return appointments.filter((a) => {
 
-    let visitorName = "";
-     let visitorEmail = "";
+    let  visitorName = "";
+      let visitorEmail = "";
 
     //  check if  visitor exists 
     if  (a.visitorId) {
 
       // get name
       if  (a.visitorId.name) {
-          visitorName =a.visitorId.name.toLowerCase();
+              visitorName =a.visitorId.name.toLowerCase();
       }
-
       // get email
       if (a.visitorId.email ) {
-        visitorEmail =a.visitorId.email.toLowerCase();
+           visitorEmail =a.visitorId.email.toLowerCase();
       }
     }
 
     // search checking
-    const  searchText =
-       search.toLowerCase();
+    const  searchText = search.toLowerCase();
 
      const nameMatch = visitorName.includes(searchText);
-
     const emailMatch =  visitorEmail.includes(searchText);
-
     const matchesSearch = nameMatch || emailMatch;
 
     // status filter
     let  matchesStatus = true;
 
     if (statusFilter !== "ALL") {
-
-        if (  a.status !== statusFilter) {
+    if (  a.status !== statusFilter) {
         matchesStatus = false;
       }
     }
@@ -167,27 +162,20 @@ const  filteredAppointments = useMemo(() => {
     // date filter
     let matchesDate = true;
 
-    if  (dateFilter ) {
-
+    if  (dateFilter ) 
+      {
       const  appointmentDate = new Date(a.visitDate).toISOString().split("T")[0];
-
-      if (appointmentDate !== dateFilter) {
+         if (appointmentDate !== dateFilter) {
         matchesDate = false;
       }
     }
 
     // final return
-    if (
-      matchesSearch &&
-      matchesStatus &&
-      matchesDate
+    if (matchesSearch &&matchesStatus && matchesDate
     ) 
     {
-
-
       return true;
     }
-
     return false;
 
   }
@@ -260,12 +248,12 @@ const  filteredAppointments = useMemo(() => {
               Dashboard
             </h1>
 
-            <p className="text-gray-500 mt-1">
+             <p className="text-gray-500 mt-1">
               Manage appointments professionally
             </p>
           </div>
 
-          <div className="flex gap-3">
+           <div className="flex gap-3">
 
             <button
               onClick={
@@ -342,7 +330,7 @@ const  filteredAppointments = useMemo(() => {
           <div className="flex flex-col lg:flex-row gap-4">
 
             {/* SEARCH */}
-            <input
+             <input
               type="text"
               placeholder="Search visitor..."
               value={search}
@@ -355,7 +343,7 @@ const  filteredAppointments = useMemo(() => {
             />
 
             {/* STATUS FILTER */}
-            <select
+              <select
               value={statusFilter}
               onChange={(e) =>
                 setStatusFilter(
@@ -371,7 +359,7 @@ const  filteredAppointments = useMemo(() => {
 
                <option value="PENDING">
                 Pending
-              </option>
+                </option>
 
                <option value="APPROVED">
                 Approved
@@ -381,7 +369,7 @@ const  filteredAppointments = useMemo(() => {
                 Rejected
               </option>
 
-              </select>
+                </select>
 
             {/* DATE FILTER */}
             <input
@@ -392,7 +380,7 @@ const  filteredAppointments = useMemo(() => {
                   e.target.value
                 )
               }
-              className="border border-gray-300 rounded-xl px-4 py-3"
+                className="border border-gray-300 rounded-xl px-4 py-3"
             />
 
           </div>
@@ -401,7 +389,7 @@ const  filteredAppointments = useMemo(() => {
         {/* TABLE */}
         <div className="bg-white rounded-2xl shadow-md overflow-hidden">
 
-          <div className="p-6 border-b">
+            <div className="p-6 border-b">
 
             <h2 className="text-2xl font-bold">
               Appointments
@@ -409,7 +397,7 @@ const  filteredAppointments = useMemo(() => {
 
           </div>
 
-           {loading ? (
+             {loading ? (
             <div className="p-10 text-center text-gray-500">
                 Loading appointments...
             </div>
@@ -421,12 +409,12 @@ const  filteredAppointments = useMemo(() => {
           ) : (
              <div className="overflow-x-auto">
 
-              <table className="w-full">
+                <table className="w-full">
 
                 <thead className="bg-gray-50">
                   <tr className="text-gray-600 text-sm uppercase">
 
-                    <th className="p-4 text-left">
+                       <th className="p-4 text-left">
                        Visitor
                     </th>
 
@@ -438,7 +426,7 @@ const  filteredAppointments = useMemo(() => {
                       Date
                     </th>
 
-                    <th className="p-4 text-left">
+                      <th className="p-4 text-left">
                        Purpose
                     </th>
 
@@ -452,8 +440,8 @@ const  filteredAppointments = useMemo(() => {
 
                   </tr>
                 </thead>
-                <tbody>
-
+                  <tbody>
+  
                   {filteredAppointments.map(
                     (a) => 
                       (
@@ -461,7 +449,7 @@ const  filteredAppointments = useMemo(() => {
                       <tr
                         key={a._id}
                         onClick={() =>
-                          setSelected(a)
+                           setSelected(a)
                         }
                         className="border-b hover:bg-gray-50 transition cursor-pointer"
                       >
@@ -473,9 +461,9 @@ const  filteredAppointments = useMemo(() => {
                             "N/A"}
                         </td>
 
-                        <td className="p-4 text-gray-600">
-                          
-                          {a.visitorId
+                         <td className="p-4 text-gray-600">
+                           
+                          { a.visitorId
                             ?.email ||
                             "N/A"}
                         </td>
@@ -487,10 +475,10 @@ const  filteredAppointments = useMemo(() => {
                           ).toLocaleString()}
                         </td>
 
-                        <td className="p-4">
+                        <td  className="p-4">
                           {
                             a.visitPurpose
-                          }
+                           }
                         </td>
 
                         <td  className=" p-4 ">
@@ -505,10 +493,10 @@ const  filteredAppointments = useMemo(() => {
                                   "REJECTED"
                                 ? "bg-red-100 text-red-700"
                                   : "bg-yellow-100 text-yellow-700"
-                            }`}
+                                }`}
                           >
                             {a.status}
-                           </span>
+                            </span>
 
                         </td>
 
@@ -566,44 +554,43 @@ const  filteredAppointments = useMemo(() => {
 
 
               </table>
-              {/* DETAILS MODAL */}
+              { /* DETAILS MODAL */}
 {  selected && (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-
-       <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-[fadeIn_.3s_ease]">
+        <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-[fadeIn_.3s_ease]">
 
       {/* HEADER */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex justify-between items-center">
+         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white flex justify-between items-center">
 
         <div>
+
           <h2 className="text-3xl font-bold">
             Appointment Details
-          </h2>
-
+          </h2>   
           <p className="text-blue-100 mt-1">
              Complete visitor information
           </p>
         </div>
 
         <button
-          onClick={() => setSelected(null)}
+            onClick={() => setSelected(null)}
           className="text-white text-3xl hover:scale-110 transition"
         >
           ×
-        </button>
+          </button>
       </div>
 
       {/* BODY */}
-        <div className="p-8 grid md:grid-cols-2 gap-6">
+          <div className="p-8 grid md:grid-cols-2 gap-6">
 
         <div className="space-y-5">
 
-          <div>
+            <div>
             <p className="text-gray-500 text-sm">
               Visitor Name
             </p>
 
-            <h3 className="text-xl font-semibold text-gray-800">
+              <h3 className="text-xl font-semibold text-gray-800">
               {selected.visitorId?.name || "N/A"}
             </h3>
           </div>
@@ -611,7 +598,7 @@ const  filteredAppointments = useMemo(() => {
            <div>
             <p className="text-gray-500 text-sm">
               Email
-            </p>
+              </p>
 
             <h3 className="text-lg font-medium text-gray-700">
               {selected.visitorId?.email || "N/A"}
@@ -619,12 +606,12 @@ const  filteredAppointments = useMemo(() => {
           </div>
 
            <div>
-            <p className="text-gray-500 text-sm">
+             <p className="text-gray-500 text-sm">
               Phone
             </p>
  
             <h3 className="text-lg font-medium text-gray-700">
-              {selected.visitorId?.phone || "N/A"}
+                {selected.visitorId?.phone || "N/A"}
             </h3>
           </div>
 
@@ -644,7 +631,7 @@ const  filteredAppointments = useMemo(() => {
 
           <div>
             <p className="text-gray-500 text-sm">
-              Appointment Date
+                Appointment Date
              </p>
   
               <h3 className="text-lg font-medium text-gray-700">
@@ -656,12 +643,12 @@ const  filteredAppointments = useMemo(() => {
 
             <div>
             <p className="text-gray-500 text-sm">
-              Status
+               Status
              </p>
 
             <span
               className={`inline-block mt-1 px-4 py-2 rounded-full text-sm font-bold ${
-                selected.status === "APPROVED"
+                 selected.status === "APPROVED"
                   ? "bg-green-100 text-green-700"
                    : selected.status === "REJECTED"
                   ? "bg-red-100 text-red-700"
@@ -673,7 +660,7 @@ const  filteredAppointments = useMemo(() => {
           </div>
 
           <div>
-            <p className="text-gray-500 text-sm">
+               <p className="text-gray-500 text-sm">
               Tracking ID
              </p>
 
@@ -688,35 +675,36 @@ const  filteredAppointments = useMemo(() => {
             </p>
 
             <h3  className= "text-lg font-medium text-gray-700">
-               {selected.hostId?.name || "N/A"}
-             </h3>
+               { selected.hostId?.name || "N/A"}
+              </h3>
           </div>
 
-        </div>
+          </div>
 
-      </div>
+       </div>
 
       {/* FOOTER */}
       <div    className="border-t px-8 py-5 flex justify-end gap-3 bg-gray-50">
 
-        <button
-          onClick={() => setSelected(null)}
+          <button
+            onClick={() => setSelected(null)}
            className="px-5 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 transition font-medium"
         >
-          Close
+            Close
         </button>
 
        </div>
 
     </div>
-  </div>
+   </div>
 )}
             </div>
-          )}
+           )}
         </div>
-      </div>
+        </div>
 
 
-    </div>
-  );
+       </div>
+  
+);
 }

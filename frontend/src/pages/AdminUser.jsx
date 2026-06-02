@@ -147,16 +147,16 @@ const handleDelete = async (id) => {
     // call delete api
     await api.delete(`/admin/users/${id}`
     );
-
+ let  afterDeletedUser=[];
     // remove  deleted user
     for (let  i =0;i < users.length;i++) {
 
         if (users[i]._id !== id)
          {
-          updatedUsers.push(users[i]);
+          afterDeletedUser.push(users[i]);
       }
     // update state
-     setUsers(updatedUsers);
+     setFilteredUsers(afterDeletedUser)
     // success message
      showToast("User deleted 🗑️");
   }

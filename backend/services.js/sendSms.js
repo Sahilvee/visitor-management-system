@@ -6,23 +6,19 @@ export const sendSMS = async (
      phone=  "+917876761842",
         message="hi your appointent is booked check mailbox for rest details "
 ) => {
-const accountSid =
-   process.env.TWILIO_SID;
+const accountSid =process.env.TWILIO_SID;
 
-const authToken =
-    process.env.TWILIO_AUTH_TOKEN;
+const authToken =process.env.TWILIO_AUTH_TOKEN;
 
   console.log("SID:", accountSid);
      console.log("TOKEN:", authToken);
 
-const  client = twilio(
-  accountSid,
+const  client = twilio(accountSid,
   authToken
 );
      try {
 
-        const response =
-          await client.messages.create({
+        const response =await client.messages.create({
 
         body: message,
 
@@ -35,7 +31,7 @@ const  client = twilio(
 
    console.log(response.sid);
 
-  } catch ( err) {
+  }  catch ( err) {
 
        console.log(err);
 

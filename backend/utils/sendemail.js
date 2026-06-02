@@ -5,7 +5,7 @@ export const sendEmail = async ({ to, subject, html,attachments = [] }) => {
     service: "gmail",
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+       pass: process.env.EMAIL_PASS,
     },
   });
 
@@ -14,7 +14,7 @@ export const sendEmail = async ({ to, subject, html,attachments = [] }) => {
     from: process.env.EMAIL_USER,
     to,
     subject,
-    html,
+     html,
      attachments 
   });
 

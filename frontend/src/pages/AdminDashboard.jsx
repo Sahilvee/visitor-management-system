@@ -96,9 +96,7 @@ function Dashboard()
         item.trackingId?.toLowerCase() || "";
 
     
-        const matchesSearch =
-        visitor.includes(search.toLowerCase()) ||
-        host.includes(search.toLowerCase()) ||
+        const matchesSearch = visitor.includes(search.toLowerCase()) || host.includes(search.toLowerCase()) ||
         tracking.includes(search.toLowerCase());
 
      const matchesStatus =

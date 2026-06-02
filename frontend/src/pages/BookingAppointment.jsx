@@ -231,8 +231,8 @@ function BookingAppointment() {
 
       <div className="absolute top-0 left-0 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl"></div>
 
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-pink-400/10 rounded-full blur-3xl"></div>
-      <div className="absolute inset-0 bg-black/10"></div>
+       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-pink-400/10 rounded-full blur-3xl"></div>
+       <div className="absolute inset-0 bg-black/10"></div>
 
        {/* POPUP */}
 
@@ -270,7 +270,7 @@ function BookingAppointment() {
                 Appointment
               </span>
 
-            </h1>
+              </h1>
 
             <p className="mt-8 text-lg text-blue-100 leading-relaxed max-w-2xl">
               Schedule secure appointments with
@@ -280,7 +280,7 @@ function BookingAppointment() {
             </p>
 
                            {/* FEATURES */}
-            <div className="grid grid-cols-3 gap-4 mt-12">
+              <div className="grid grid-cols-3 gap-4 mt-12">
 
               <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-5 text-center">
                 <h2 className="text-2xl font-bold">
@@ -299,7 +299,7 @@ function BookingAppointment() {
                 <p className="text-sm text-blue-100 mt-2">
                   Slot Checking
                 </p>
-              </div>
+               </div>
 
 
               <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-5 text-center">
@@ -319,8 +319,7 @@ function BookingAppointment() {
           {/* RIGHT */}
           <div>
 
-            <form
-              onSubmit={handleSubmit}
+            <form onSubmit={handleSubmit}
               className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[36px] p-8 lg:p-10 shadow-2xl"
             >
 
@@ -342,19 +341,17 @@ function BookingAppointment() {
                  {/* HOST */}
                 <div>
                   <label className="block text-sm font-medium text-blue-100 mb-2">
-                     Select Employee
+                      Select Employee
                   </label>
 
                   <div className="relative">
-                    <select
-                       name="hostId"
+                    <select   name="hostId"
                       value={formData.hostId}
                       onChange={handleChange}
                        className="w-full appearance-none bg-white/10 border border-white/20 text-white rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-cyan-300 transition-all"
                        required
                     >
-                      <option
-                         value=""
+                      <option value=""
                          className="bg-slate-900 text-white"
                       >
                          Select Employee
@@ -385,11 +382,9 @@ function BookingAppointment() {
                   </label>
 
                   <input
-                    type="email"
-                    name="email"
+                       type="email" name="email"
                      value={formData.email}
-                     onChange={handleChange}
-                     placeholder="Enter your email"
+                     onChange={handleChange} placeholder="Enter your email"
                      className="w-full bg-white/10 border border-white/20 text-white placeholder:text-blue-100/70 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-cyan-300 transition-all"
                      required
                   />
@@ -405,7 +400,7 @@ function BookingAppointment() {
                   <input
                     type="text"
                      name="visitPurpose"
-                    value={formData.visitPurpose}
+                      value={formData.visitPurpose}
                      onChange={handleChange}
                     placeholder="Purpose of visit"
                      className="w-full bg-white/10 border border-white/20 text-white placeholder:text-blue-100/70 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-cyan-300 transition-all"
@@ -457,7 +452,7 @@ function BookingAppointment() {
                        required
                     >
                       <option
-                        value=""
+                            value=""
                         className="bg-slate-900 text-white"
                       >
                         Select Slot
@@ -465,11 +460,9 @@ function BookingAppointment() {
 
                       { generateSlots().map(
                         (slot) => {
-                           const  booked =
-                            isSlotBooked(slot);
+                           const  booked = isSlotBooked(slot);
 
-                          const past =
-                            isPastTime(slot);
+                          const past = isPastTime(slot);
 
                              const disabled =
                             booked || past;
@@ -566,7 +559,7 @@ function BookingAppointment() {
             </form>
 
           </div>
-        </div>
+   </div>
 
 
       </div>

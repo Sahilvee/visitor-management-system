@@ -168,8 +168,7 @@ function FrontDesk() {
         <div  className="flex items-center gap-4">
 
            {/* STATUS */}
-          <div
-             className={`px-4 py-2 rounded-full text-sm font-medium ${
+          <div className={`px-4 py-2 rounded-full text-sm font-medium ${
               isScanning
                  ? "bg-green-100 text-green-700"
                  : "bg-gray-100 text-gray-600"
@@ -179,8 +178,7 @@ function FrontDesk() {
           </div>
 
         {/* LOGOUT */}
-          <button
-            onClick={handleLogout}
+          <button onClick={handleLogout}
             className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-xl transition"
           >
              <LogOut size={18} />
@@ -214,8 +212,8 @@ function FrontDesk() {
                 <p className="text-sm text-gray-500">
                   Use camera or upload QR image
                 </p>
-              </div>
-            </div>
+               </div>
+                  </div>
 
                 {/* SCANNER   */}
            
@@ -226,16 +224,15 @@ function FrontDesk() {
               {!isScanning  && (
                 <div  className=" absolute  inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center">
 
-                  <div className=" w-20 h-20 rounded-full bg-blue-50  flex items-center justify-center mb-4">
-                    <Camera  size={34} className="text-blue-600"  />
+                   <div className=" w-20 h-20 rounded-full bg-blue-50  flex items-center justify-center mb-4">
+                        <Camera  size={34} className="text-blue-600"  />
                   </div>
 
 
                   <p className="text-gray-600 font-medium">
                     Start camera or upload QR image
                   </p>
-                  <input
-                     type="file"
+                  <input type="file"
                      accept="image/*"
                     id="fileInput"
                     className="hidden"
@@ -245,7 +242,7 @@ function FrontDesk() {
                   />
 
                  <label
-                     htmlFor="fileInput"
+                       htmlFor="fileInput"
                     className="mt-5 flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-5 py-3 rounded-xl cursor-pointer transition"
                   >
                      <Upload size={18} />
@@ -260,8 +257,7 @@ function FrontDesk() {
                         {/* ACTIONS */}
             <div className="flex flex-wrap gap-3 mt-6">
 
-               <button
-                onClick={startScanner}
+               <button   onClick={startScanner}
                 disabled={isScanning}
                 className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-5 py-3 rounded-xl transition"
               >
@@ -271,16 +267,14 @@ function FrontDesk() {
               </button>
 
               <button
-                onClick={stopScanner}
-                disabled={!isScanning}
+                onClick={stopScanner}  disabled={!isScanning}
                 className="bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white px-5 py-3 rounded-xl transition"
               >
 
                 Stop
               </button>
 
-              <button
-                onClick={() => {
+              <button onClick={() => {
                    setResult("");
                    setUserData(null);
                   scanLockRef.current = false;
@@ -302,15 +296,15 @@ function FrontDesk() {
             </h3>
 
             { !result ? (
-              < div   className="h-full flex flex-col items-center justify-center text-center py-20">
+                < div   className="h-full flex flex-col items-center justify-center text-center py-20">
 
                 <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
                   <ScanLine className="text-gray-500" />
                 </div>
 
-                <p  className="text-gray-500 text-sm">
+                <p  className="text-gray-500  text-sm">
                      No QR scanned yet
-                </p>
+                 </p>
 
               </div>
             ) :  (
@@ -318,8 +312,8 @@ function FrontDesk() {
 
                           {/* RESULT */}
                 <div
-                  className={`p-4 rounded-2xl  text-sm font-medium  mb-5 ${
-                     result.includes("❌")
+                  className={`p-4  rounded-2xl  text-sm font-medium  mb-5 ${
+                       result.includes("❌")
                        ? "bg-red-50 text-red-600 border border-red-100"
                       : "bg-green-50 text-green-700 border border-green-100"
                   }`}
@@ -328,30 +322,30 @@ function FrontDesk() {
                 </div>
 
                            {/* USER DETAILS */}
-                {userData && (
+                { userData && (
                  
-                 <div className="space-y-4">
+                 <div  className="space-y-4">
 
                     <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
 
-                      <p className="text-xs text-gray-400 mb-1">
+                      <p  className="text-xs text-gray-400 mb-1">
                         Visitor Name
                       </p>
 
                       <p className="font-semibold text-gray-800">
                         {userData.name}
-                      </p>
+                        </p>
 
                      </div>
 
                     <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
 
                        <p className="text-xs text-gray-400 mb-1">
-                        Host
+                         Host
                       </p>
 
                       <p className="font-semibold text-gray-800">
-                        {userData.host}
+                          {userData.host}
                       </p>
 
                      </div>
@@ -360,7 +354,7 @@ function FrontDesk() {
 
                       <p className="text-xs text-gray-400 mb-1">
                         Purpose
-                      </p>
+                         </p>
 
                        <p className="font-semibold text-gray-800">
                         {userData.purpose}
@@ -376,9 +370,9 @@ function FrontDesk() {
 
                       <p className="font-semibold text-gray-800">
                         {new Date(userData.time).toLocaleString()}
-                      </p>
+                       </p>
 
-                     </div>
+                      </div>
 
                    </div>
                 )}
@@ -394,7 +388,7 @@ function FrontDesk() {
 
 
 
-    </div>
+     </div>
   );
   
 }

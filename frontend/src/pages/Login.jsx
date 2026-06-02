@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import api from "../service.js/axios.jsx";
 import endpoints from "../service.js/endPoints.jsx";
 import { useNavigate } from "react-router-dom";
-
+import { loginSchema } from "../service.js/joiSetup.js";
 function LoginPage() {
 
   const [email, setEmail] = useState("");
@@ -50,6 +50,11 @@ function LoginPage() {
       setError("All credentials required");
       return;
     }
+     const {error} =loginSchema.validate({email,password});
+     if (error) {
+    setError(error.details[0].message);
+    return;
+  }
 
     try {
       setLoading(true);
